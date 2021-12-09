@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Document</title>
+    <link rel="stylesheet" href="/styles.css" />
+  </head>
+  <body>
+    <div>
+      <input type="text" id="title"/ >
+      <input type="text" id="body" />
+      <button id="addTodoButton">Add Todo</button>
+    </div>
+    <div id="todosContainer"></div>
+
+    <script>
+      window.onload = async function () {
+        let res = await fetch("http://localhost:8080/todos", {
+          method: "GET",
+        });
+
+        let todos = await res.json();
+
+        for (let i = 0; i < todos.length; i++) {
+          //Creating the elements
+          let todoContainer = document.createElement("div");
+          todoContainer.classList.add("todo-container");
+          let todoTitle = document.createElement("h2");
+          let todoBody = document.createElement("p");
+          // Add information about todo to the h2 and p tags
+          todoTitle.innerText = todos[i].title;
+          todoBody.innerText = todos[i].body;
+          // Nest h2  and p into container
+          todoContainer.append(todoTitle);
+          todoContainer.append(todoBody);
+
+          let todosContainer = document.getElementById("todosContainer");
+          todosContainer.append(todoContainer);
+        }
+      };
+
+      let addTodo = async () => {
+        let inputTitle = document.getElementById("title");
+        let inputBody = document.getElementById("body");
+
+        let res = await fetch(
+          //http://localhost:8080?title=title2&body=Some%20Task          {
+          `http://localhost:8080/todos?body=${inputBody.value}&title=${inputTitle.value}`,
+          {
+            method: "POST",
+          }
+        );
+
+        let todoContainer = document.createElement("div");
+        todoContainer.classList.add("todo-container");
+        let todoTitle = document.createElement("h2");
+        let todoBody = document.createElement("p");
+        // Add information about todo to the h2 and p tags
+        todoTitle.innerText = inputTitle.value;
+        todoBody.innerText = inputBody.value;
+        // Nest h2  and p into container
+        todoContainer.append(todoTitle);
+        todoContainer.append(todoBody);
+
+        let todosContainer = document.getElementById("todosContainer");
+        todosContainer.append(todoContainer);
+
+        alert("added successfully");
+      };
+
+      document
+        .getElementById("addTodoButton")
+        .addEventListener("click", addTodo);
+    </script>
+  </body>
+</html>
