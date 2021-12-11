@@ -3,7 +3,7 @@
   <head>
     <meta charset="UTF-8" />
     <title>Document</title>
-    <link rel="stylesheet" href="/styles.css" />
+    <link rel="stylesheet" href="/static/styles.css" />
   </head>
   <body>
     <div>
@@ -20,7 +20,7 @@
         });
 
         let todos = await res.json();
-
+        console.log(todos);
         for (let i = 0; i < todos.length; i++) {
           //Creating the elements
           let todoContainer = document.createElement("div");
@@ -43,13 +43,19 @@
         let inputTitle = document.getElementById("title");
         let inputBody = document.getElementById("body");
 
-        let res = await fetch(
-          //http://localhost:8080?title=title2&body=Some%20Task          {
-          `http://localhost:8080/todos?body=${inputBody.value}&title=${inputTitle.value}`,
-          {
-            method: "POST",
-          }
-        );
+        let body = {
+          title: inputTitle.value,
+          body: inputBody.value,
+        };
+        console.log(body);
+
+        let res = await fetch(`http://localhost:8080/todos`, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(body),
+        });
 
         let todoContainer = document.createElement("div");
         todoContainer.classList.add("todo-container");
