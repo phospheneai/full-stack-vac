@@ -2,6 +2,7 @@ const path = require("path");
 const Express = require("express");
 const fs = require("fs");
 const mongoose = require("mongoose");
+const cors = require("cors");
 
 const todoModel = require("./models/todo.model");
 
@@ -12,18 +13,12 @@ mongoose.connect("mongodb://localhost:27017/todo-app", () =>
 let app = Express();
 
 app.use("/static", Express.static(path.join(__dirname, "static")));
+app.use(cors());
+app.set("port", 3000);
 app.use(Express.json());
 app.use(Express.urlencoded({ extended: true }));
 
 app.listen(8080, () => console.log("Server started"));
-
-app.get("/", (req, res) => {
-  res.sendFile(path.join(__dirname, "views", "index.html"));
-});
-
-app.get("/contact", (req, res) => {
-  res.sendFile(path.join(__dirname, "views", "contact.html"));
-});
 
 app.get("/todos", async (req, res) => {
   let todos = await todoModel.find({});
@@ -40,9 +35,9 @@ app.post("/todos", async (req, res) => {
   });
 });
 
-app.get("*", (req, res) => {
-  res.sendFile(path.join(__dirname, "views", "404.html"));
-});
+// app.get("*", (req, res) => {
+//   res.sendFile(path.join(__dirname, "views", "404.html"));
+// });
 
 // function addTodos(title, body) {
 //   let todos;
